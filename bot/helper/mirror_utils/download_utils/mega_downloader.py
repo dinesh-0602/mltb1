@@ -76,7 +76,7 @@ class MegaAppListener(MegaListener):
         LOGGER.error(f'Mega Request error in {error}')
         if not self.is_cancelled:
             self.is_cancelled = True
-            self.listener.onDownloadError("RequestTempError: " + error.toString())
+            self.listener.onDownloadError(f"RequestTempError: {error.toString()}")
         self.error = error.toString()
         self.continue_event.set()
 
@@ -152,14 +152,11 @@ def add_mega_download(mega_link: str, path: str, listener, name: str):
         if folder_api is not None:
             folder_api.removeListener(mega_listener)
         return
-    if name:
-        mname = name
-    else:
-        mname = node.getName()
+    mname = name or node.getName()
     if STOP_DUPLICATE and not listener.isLeech:
         LOGGER.info('Checking File/Folder if already in Drive')
         if listener.isZip:
-            mname = mname + ".zip"
+            mname = f"{mname}.zip"
         elif listener.extract:
             try:
                 mname = get_base_name(mname)
